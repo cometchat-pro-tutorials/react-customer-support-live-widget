@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
 import {CometChat} from '@cometchat-pro/chat';
+import MDSpinner from "react-md-spinner";
 
 const agentUID = '{AGENT_UID}';
 const AGENT_MESSAGE_LISTENER_KEY = 'agent-listener'
@@ -12,7 +13,9 @@ class Dashboard extends Component {
   state = {
     friends: [],
     selectedFriend: '',
-    chat: []
+    chat: [],
+    chatIsLoading: false,
+    friendsIsLoading:true
   }
 
   componentDidMount(){
@@ -24,7 +27,8 @@ class Dashboard extends Component {
           console.log("Login successfully:", { user });
           this.fetchUsers().then(result => {
             this.setState({
-              friends: result
+              friends: result,
+              friendsIsLoading: false
             })
           });
           
@@ -112,7 +116,8 @@ class Dashboard extends Component {
 
   fetchPreviousMessage = (uid) => {
     this.setState({
-      chat: []
+      chat: [],
+      chatIsLoading: true
     }, () => {
       var limit = 30;
       var messagesRequest = new CometChat.MessagesRequestBuilder().setUID(uid).setLimit(limit).build();
@@ -120,7 +125,8 @@ class Dashboard extends Component {
         messages => {
           console.log("Message list fetched:", messages);
           this.setState({
-            chat: messages
+            chat: messages,
+            chatIsLoading: false
           })
         },
         error => {
@@ -131,7 +137,6 @@ class Dashboard extends Component {
   }
 
   render() {
-    const { friends, chat, selectedFriend } = this.state;
     return(
       <div className='container-fluid'>
         <div className='row'>
@@ -141,16 +146,7 @@ class Dashboard extends Component {
               <div className='col-lg-4 col-xs-12 bg-light' style={{ height: 658 }}>
               <div className='row p-3'><h2>Recent Chat</h2></div>
               <div className='row ml-0 mr-0 h-75 bg-white border rounded' style={{ height: '100%', overflow:'auto' }}>
-                <ul className="list-group list-group-flush w-100">
-                  { 
-                    friends
-                    .map(friend => 
-                      <li 
-                        key={friend.uid} 
-                        className={`list-group-item ${friend.uid === selectedFriend ? 'active':''}`} 
-                        onClick={() => this.selectFriend(friend.uid)}>{friend.name} </li>)
-                  }                
-                </ul>
+              <ContactBox {...this.state} />
               </div>
               </div>
               <div className='col-lg-8 col-xs-12 bg-light'  style={{ height: 658 }}>
@@ -158,17 +154,7 @@ class Dashboard extends Component {
                   <h2>Who you gonna chat with?</h2>
                 </div>
                 <div className='row pt-5 bg-white' style={{ height: 530, overflow:'auto' }}>
-                  <div className='col-xl-12'>
-                    { 
-                      chat
-                      .map(chat => 
-                        <div key={chat.id} className="message">
-                          <div className={`${chat.receiver !== agentUID ? 'balon1': 'balon2'} p-3 m-1`}>
-                            {chat.text}
-                          </div>
-                        </div>)
-                    }  
-                  </div>
+                <ChatBox {...this.state} />
                 </div>
                 <div className="row bg-light" style={{ bottom: 0, width: '100%' }}>
                 <form className="row m-0 p-0 w-100" onSubmit={this.handleSubmit}>
@@ -195,8 +181,63 @@ class Dashboard extends Component {
       </div>
     )
   }
+}
+
+class ChatBox extends Component {
+  render(){
+    const {chat, chatIsLoading} = this.props;
+    if (chatIsLoading) {
+      return (
+        <div className='col-xl-12 my-auto text-center'>
+          <MDSpinner size='72'/>
+        </div>
+      )
+    }
+    else {
+      return (
+        <div className='col-xl-12'>
+          { 
+            chat
+            .map(chat => 
+              <div key={chat.id} className="message">
+                <div className={`${chat.receiver !== agentUID ? 'balon1': 'balon2'} p-3 m-1`}>
+                  {chat.text}
+                </div>
+              </div>)
+          }  
+        </div>
+      )
+    }
+  }
+
+}
 
 
+class ContactBox extends Component {
+  render(){
+    const {friends, friendsIsLoading, selectedFriend} = this.props;
+    if (friendsIsLoading) {
+      return (
+        <div className='col-xl-12 my-auto text-center'>
+          <MDSpinner size='72'/>
+        </div>
+      )
+    }
+    else {
+      return (
+        <ul className="list-group list-group-flush w-100">
+          { 
+            friends
+            .map(friend => 
+              <li 
+                key={friend.uid} 
+                className={`list-group-item ${friend.uid === selectedFriend ? 'active':''}`} 
+                onClick={() => this.selectFriend(friend.uid)}>{friend.name} </li>)
+          }                
+        </ul>
+      )
+    }
+  }
 }
 
 export default Dashboard;
