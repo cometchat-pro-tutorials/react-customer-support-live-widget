@@ -4,9 +4,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
 import App from './App';
 import { CometChat } from '@cometchat-pro/chat';
+import config from './config';
 
-const appID = '{APP_ID}';
-CometChat.init(appID)
+CometChat.init(config.appID)
 
 ReactDOM.render(<App />, document.getElementById('root'));
-

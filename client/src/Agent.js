@@ -2,33 +2,33 @@ import React, {Component} from 'react';
 
 import {CometChat} from '@cometchat-pro/chat';
 import MDSpinner from "react-md-spinner";
+import config from './config';
 
-const agentUID = '{AGENT_UID}';
+const agentUID = config.agentUID;
 const AGENT_MESSAGE_LISTENER_KEY = 'agent-listener'
-const messageType = CometChat.MESSAGE_TYPE.TEXT;
-const receiverType = CometChat.RECEIVER_TYPE.USER;
+const limit = 30;
 
-class Dashboard extends Component {
+class Agent extends Component {
 
   state = {
-    friends: [],
-    selectedFriend: '',
+    customers: [],
+    selectedCustomer: '',
     chat: [],
     chatIsLoading: false,
-    friendsIsLoading:true
+    customerIsLoading:true
   }
 
   componentDidMount(){
-    this.fetchAuth(agentUID).then(
-      result => {
-        console.log('auth token fetched', result);
-        CometChat.login(result.authToken)
+    this.fetchAuthToken(agentUID).then(
+      authToken => {
+        console.log('auth token fetched', authToken);
+        CometChat.login(authToken)
         .then( user => {
           console.log("Login successfully:", { user });
           this.fetchUsers().then(result => {
             this.setState({
-              friends: result,
-              friendsIsLoading: false
+              customers: result,
+              customerIsLoading: false
             })
           });
           
@@ -36,20 +36,19 @@ class Dashboard extends Component {
             AGENT_MESSAGE_LISTENER_KEY,
             new CometChat.MessageListener({
               onTextMessageReceived: message => {
-                let {friends, selectedFriend, chat} = this.state;
+                let {customers, selectedCustomer, chat} = this.state;
                 console.log("Incoming Message Log", { message });
-                if(selectedFriend === message.sender.uid){
+                if(selectedCustomer === message.sender.uid){
                   chat.push(message);
                   this.setState({
                     chat
                   })
                 } else {
-                  let filtered = friends.filter(function(friend) { return friend.uid === message.sender.uid; }); 
-                  console.log(filtered);
-                  if(!filtered.length){
-                    friends.push(message.sender)
+                  let aRegisteredCustomer = customers.filter( customer => { return customer.uid === message.sender.uid }); 
+                  if(!aRegisteredCustomer.length){
+                    customers.push(message.sender)
                     this.setState({
-                      friends
+                      customers
                     })
                   }
                 }
@@ -64,10 +63,10 @@ class Dashboard extends Component {
     );
   }
 
-  fetchAuth = async (uid) => {
+  fetchAuthToken = async uid => {
     const response = await fetch(`/api/auth?uid=${uid}`)
     const result = await response.json()
-    return result;
+    return result.authToken;
   }
 
   fetchUsers = async () => {
@@ -81,10 +80,10 @@ class Dashboard extends Component {
     let message = this.refs.message.value;
 
     var textMessage = new CometChat.TextMessage(
-      this.state.selectedFriend,
+      this.state.selectedCustomer,
       message,
-      messageType,
-      receiverType
+      CometChat.MESSAGE_TYPE.TEXT,
+      CometChat.RECEIVER_TYPE.USER
     );
 
     CometChat.sendMessage(textMessage).then(
@@ -108,19 +107,22 @@ class Dashboard extends Component {
     CometChat.logout();
   }
 
-  selectFriend(uid){
+  selectCustomer = uid => {
     this.setState({
-      selectedFriend: uid
+      selectedCustomer: uid
     }, ()=> {this.fetchPreviousMessage(uid)})
   }
 
-  fetchPreviousMessage = (uid) => {
+  fetchPreviousMessage = uid => {
     this.setState({
       chat: [],
       chatIsLoading: true
     }, () => {
-      var limit = 30;
-      var messagesRequest = new CometChat.MessagesRequestBuilder().setUID(uid).setLimit(limit).build();
+      var messagesRequest = new CometChat.MessagesRequestBuilder()
+      .setUID(uid)
+      .setLimit(limit)
+      .build();
+
       messagesRequest.fetchPrevious().then(
         messages => {
           console.log("Message list fetched:", messages);
@@ -144,9 +146,9 @@ class Dashboard extends Component {
           <div className="col-md-8 h-100pr border rounded">
             <div className='row'>
               <div className='col-lg-4 col-xs-12 bg-light' style={{ height: 658 }}>
-              <div className='row p-3'><h2>Recent Chat</h2></div>
+              <div className='row p-3'><h2>Customer List</h2></div>
               <div className='row ml-0 mr-0 h-75 bg-white border rounded' style={{ height: '100%', overflow:'auto' }}>
-              <ContactBox {...this.state} />
+              <CustomerList {...this.state} selectCustomer={this.selectCustomer}/>
               </div>
               </div>
               <div className='col-lg-8 col-xs-12 bg-light'  style={{ height: 658 }}>
@@ -213,10 +215,10 @@ class ChatBox extends Component {
 }
 
 
-class ContactBox extends Component {
+class CustomerList extends Component {
   render(){
-    const {friends, friendsIsLoading, selectedFriend} = this.props;
-    if (friendsIsLoading) {
+    const {customers, customerIsLoading, selectedCustomer} = this.props;
+    if (customerIsLoading) {
       return (
         <div className='col-xl-12 my-auto text-center'>
           <MDSpinner size='72'/>
@@ -227,12 +229,12 @@ class ContactBox extends Component {
       return (
         <ul className="list-group list-group-flush w-100">
           { 
-            friends
-            .map(friend => 
+            customers
+            .map(customer => 
               <li 
-                key={friend.uid} 
-                className={`list-group-item ${friend.uid === selectedFriend ? 'active':''}`} 
-                onClick={() => this.selectFriend(friend.uid)}>{friend.name} </li>)
+                key={customer.uid} 
+                className={`list-group-item ${customer.uid === selectedCustomer ? 'active':''}`} 
+                onClick={() => this.props.selectCustomer(customer.uid)}>{customer.name} </li>)
           }                
         </ul>
       )
@@ -240,4 +242,4 @@ class ContactBox extends Component {
   }
 }
 
-export default Dashboard;
+export default Agent;

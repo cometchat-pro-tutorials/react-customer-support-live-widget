@@ -1,20 +1,35 @@
-# Requirements
+# React Chat Widget App With CometChat Pro
 
-You need to sign up for CometChat PRO and create your application first
+This example shows how to build a React chat widget using CometChat Pro SDK and API. 
 
-Then put your AppID and ApiKey into `index.js` line 6-7
+SCREENSHOTS
 
+![Client](screenshot/screenshot_1.png)
+![Agent](screenshot/screenshot_2.png)
 
-And AppID into `client/src/index.js` line 8
+Jump straight into the code or read the accompanying step-by-step guide here on our blog.
 
-Then put AgentUID on `index.js` line 8 `client/src/App.js` line 10 and `client/dashboard.js` line 5
+## Technology
+This demo uses:
 
-## Run install
+* [CometChat Pro JavaScript SDK](https://github.com/cometchat-pro/javascript-chat-sdk)
+* React
+* Express
 
-Don't forget to run `npm install` on both root directory and `client/`
+## Running the demo locally
+* Download the repository [here](https://github.com/cometchat-pro/javascript-reactjs-chat-app.git) or by running `git clone https://github.com/cometchat-pro/javascript-reactjs-chat-app.git`
+* run `npm install` on both root directory and `client/`
+* You need to sign up for CometChat PRO and create your application first
+* Then put your AppID and ApiKey into `server.js` line 6-7
+* Also put your AppID and ApiKey into `client/config.js`
+* run `npm install` on both root directory and `client/`
+* In root folder, run `npm run start`, then on another bash terminal, navigate to `client` directory and run `npm run start`
+* A browser will open `localhost:3000`
 
-## Running the project
+## Useful links
 
-In root folder, run `npm run start`, then on another bash terminal, navigate to `client` directory and run `npm run start`
+* [📚Tutorial](https://prodocs.cometchat.com/docs)
 
-A browser will open `localhost:3000`
+## Other examples
+
+* [ReactJS Chat app](https://github.com/cometchat-pro/javascript-reactjs-chat-app)

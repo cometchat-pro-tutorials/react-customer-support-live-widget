@@ -1,13 +1,12 @@
 const express = require('express');
 const axios = require('axios');
-// Create the server
 const app = express();
 
-const appID = '{APP_ID}';;
-const apiKey = '{API_KEY}';
-const agentUID = '{AGENT_UID}';
+const appID = '{appID}';;
+const apiKey = '{apiKey}';
+const agentUID = '{agentUID}';
 
-const url = 'https://api.cometchat.com/v1/';
+const url = 'https://api.cometchat.com/v1';
 
 const headers = {
   'Content-Type': 'application/json',
@@ -16,19 +15,19 @@ const headers = {
 };
 
 app.get('/api/create', (req, res) => {
-  let data = {
+  const data = {
     uid: new Date().getTime(),
     name: 'customer',
   };
   axios
-    .post(url + 'users', JSON.stringify(data), {
-      headers: headers,
+    .post(`${url}/users`, JSON.stringify(data), {
+      headers,
     })
     .then(response => {
-      requestAuth(response.data.data.uid)
-        .then(response => {
-          console.log('Success:' + JSON.stringify(response));
-          res.json(response);
+      requestAuthToken(response.data.data.uid)
+        .then(token => {
+          console.log('Success:' + JSON.stringify(token));
+          res.json(token);
         })
         .catch(error => console.error('Error:', error));
     })
@@ -37,19 +36,19 @@ app.get('/api/create', (req, res) => {
 
 app.get('/api/auth', (req, res) => {
   const uid = req.query.uid;
-  requestAuth(uid)
-    .then(response => {
-      console.log('Success:' + JSON.stringify(response));
-      res.json(response);
+  requestAuthToken(uid)
+    .then(token => {
+      console.log('Success:' + JSON.stringify(token));
+      res.json(token);
     })
     .catch(error => console.error('Error:', error));
 });
 
-const requestAuth = uid => {
+const requestAuthToken = uid => {
   return new Promise(function(resolve, reject) {
     axios
-      .post(url + 'users/' + uid + '/auth_tokens', null, {
-        headers: headers,
+      .post(`${url}/users/${uid}/auth_tokens`, null, {
+        headers,
       })
       .then(response => {
         console.log('New Auth Token:', response.data);
@@ -61,15 +60,15 @@ const requestAuth = uid => {
 
 app.get('/api/users', (req, res) => {
   axios
-    .get(url + 'users', {
-      headers: headers,
+    .get(`${url}/users`, {
+      headers,
     })
     .then(response => {
-      const {data} = response.data;
-      var filteredData = data.filter(function(data) {
+      const { data } = response.data;
+      const filterAgentData = data.filter(data => {
         return data.uid != agentUID;
       });
-      res.json(filteredData);
+      res.json(filterAgentData);
     })
     .catch(error => console.error('Error:', error));
 });
