@@ -7,7 +7,6 @@ import 'react-chat-widget/lib/styles.css';
 
 const agentUID = config.agentUID;
 const CUSTOMER_MESSAGE_LISTENER_KEY = "client-listener";
-
 const limit = 30;
 
 class Client extends Component {
