@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const app = express();
 
-const appID = '{appID}';;
+const appID = '{appID}';
 const apiKey = '{apiKey}';
 const agentUID = '{agentUID}';
 
@@ -45,7 +45,7 @@ app.get('/api/auth', (req, res) => {
 });
 
 const requestAuthToken = uid => {
-  return new Promise(function(resolve, reject) {
+  return new Promise((resolve, reject) => {
     axios
       .post(`${url}/users/${uid}/auth_tokens`, null, {
         headers,
@@ -66,7 +66,7 @@ app.get('/api/users', (req, res) => {
     .then(response => {
       const { data } = response.data;
       const filterAgentData = data.filter(data => {
-        return data.uid != agentUID;
+        return data.uid !== agentUID;
       });
       res.json(filterAgentData);
     })
