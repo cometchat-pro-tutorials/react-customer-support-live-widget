@@ -1,4 +1,4 @@
-# React Chat Widget App With CometChat Pro
+# Build a Customer Support Live Chat Widget with React
 
 This example shows how to build a React chat widget using CometChat Pro SDK and API. 
 
