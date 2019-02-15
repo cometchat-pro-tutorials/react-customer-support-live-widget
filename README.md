@@ -13,7 +13,7 @@ This demo app shows how to build an Android group chat app with React:
 
 ## Running the demo
 
-To run the demo first setup CometChat:L
+To run the demo first setup CometChat:
 
 1. [Create a CometChat account](https://app.cometchat.com) if you haven't already
 2. From the [dashboard](https://app.cometchat.com/#/apps), create a new app called "React chat widget"
