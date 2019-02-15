@@ -27,14 +27,15 @@ To run the demo first setup CometChat:
 Setup the server:
 
 1. In the root directory run `npm install`
-2. Open [sever.js](https://github.com/bookercodes/react-customer-support-live-widget) and update [`appID`](https://github.com/bookercodes/react-customer-support-live-widget/blob/master/server.js#L5), [`apiKey`](https://github.com/bookercodes/react-customer-support-live-widget/blob/master/server.js#L6), and [`agentUID`](https://github.com/bookercodes/react-customer-support-live-widget/blob/master/server.js#L7) to use your own credentials
+2. Open [sever.js](https://github.com/bookercodes/react-customer-support-live-widget) and update [`appID`](https://github.com/bookercodes/react-customer-support-live-widget/blob/master/server.js#L5), [`apiKey`](https://github.com/bookercodes/react-customer-support-live-widget/blob/master/server.js#L6) to use your own credentials
+3. Set [`agentUID`](https://github.com/bookercodes/react-customer-support-live-widget/blob/master/server.js#L7) to "Agent"
 3. Run the server by running `node server.js`
 
 Setup the client:
 
 1. Go to the `client` directory
 2. Run `npm install` there too
-3. Update [config.js](https://github.com/bookercodes/react-customer-support-live-widget/blob/master/client/src/config.js) with your credential too
+3. Update [config.js](https://github.com/bookercodes/react-customer-support-live-widget/blob/master/client/src/config.js) with your credentials too
 4. In another terminal run `npm start` to start the client
 
 Questions about running the demo? [Open an issue](https://github.com/bookercodes/react-customer-support-live-widget/issues). We're here to help ✌️
