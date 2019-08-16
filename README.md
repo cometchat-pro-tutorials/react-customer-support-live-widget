@@ -3,7 +3,7 @@
 
 Read the full tutorial here:
 
-[**>> Build a Customer Support Live Chat Widget with React**](https://www.cometchat.com/pro/tutorials/build-a-customer-support-live-chat-widget-with-react?utm_source=github&utm_medium=example-code-readme)
+[**>> Build a Customer Support Live Chat Widget with React**](https://www.cometchat.com/tutorials/build-a-customer-support-live-chat-widget-with-react/?utm_source=github&utm_medium=example-code-readme)
 
 This demo app shows how to build an Android group chat app with React:
 
